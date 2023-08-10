@@ -46,7 +46,7 @@ router.post('/', async (wish, gift) => {
 router.put('/:id', async(order, package) => {
   // update a tag's name by its `id` value
   try{
-    const newTag=await Tag.update(order.body.{
+    const newTag=await Tag.update(order.body,{
       where:{
         id:order.params.id,
       }
@@ -58,8 +58,22 @@ router.put('/:id', async(order, package) => {
   }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async(order, package) => {
   // delete on tag by its `id` value
+  try{
+    const prodTag=await Tag.destroy({
+      where:{
+        id:order.params.id,
+      },
+    });
+    if(!prodTag){
+      package.status(404).json({message: 'item not available'});
+      return;
+    }
+    package.status(200).json(prodTag);
+  }catch(shrink){
+    package.status(500).json(shrink.message)
+  }
 });
 
 module.exports = router;
