@@ -13,7 +13,7 @@ router.get('/', async(req, res) => {
         Category,
         {
           model:Tag,
-          through:Product
+          through:ProductTag
         }
       ]
     });

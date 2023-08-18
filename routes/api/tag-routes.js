@@ -8,7 +8,12 @@ router.get('/', async (req, res) => {
   // be sure to include its associated Product data
   try{
     const productSKU=await Tag.findAll({
-      include:[{Product}]
+      include:[
+        {
+          model:Product,
+          through:ProductTag
+        }
+      ]
     });
     res.status(200).json(productSKU);
   }catch(err){
@@ -21,7 +26,10 @@ router.get('/:id', async(req, res) => {
   // be sure to include its associated Product data
   try{
     const productSKU=await Tag.findByPk(req.params.id,{
-      include:[{model:Product}]
+      include:[{
+        model:Product,
+        through:ProductTag
+      }]
     });
     if(!productSKU){
       res.status(404).json({message: 'item not available'});
@@ -46,13 +54,12 @@ router.post('/', async (req, res) => {
 router.put('/:id', async(req, res) => {
   // update a tag's name by its `id` value
   try{
-    const newTag=await Tag.update(req.body,{
+    const newTag = await Tag.update(req.body, {
       where:{
         id:req.params.id,
       }
     })
-    console.log(newTag);
-    res.status(200).json()
+    res.status(200).json(newTag)
   }catch(err){
     res.status(500).json(err.message)
   }
@@ -70,7 +77,7 @@ router.delete('/:id', async(req, res) => {
       res.status(404).json({message: 'item not available'});
       return;
     }
-    res.status(200).json(prodTag);
+    res.status(200).json('Tag deleted');
   }catch(err){
     res.status(500).json(err.message)
   }
